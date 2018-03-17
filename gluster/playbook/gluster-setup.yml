@@ -1,0 +1,102 @@
+---
+# gluster-setup.yml
+
+- hosts: storage-[1:2]
+  remote_user: vagrant
+  become: yes
+  gather_facts: false
+
+  tasks:
+
+  - name: create storage disk partition 
+    parted:
+      device: /dev/sdb
+      number: 1
+      state: present
+      align: cylinder
+
+  - name: create XFS filesystem
+    filesystem:
+      fstype: xfs
+      dev: /dev/sdb1
+
+  - name: create mountpoint
+    file:
+      path: /data/brick1
+      state: directory
+      owner: root
+      group: root
+      mode: 0755
+      recurse: yes
+
+  - name: mount disk
+    mount:
+      path: /data/brick1
+      src: /dev/sdb1
+      fstype: xfs
+      state: mounted
+
+  - name: install gluster repo
+    package:
+      name: centos-release-gluster312.noarch
+      state: present
+
+  - name: install gluster software
+    package:
+      name: glusterfs-server
+      state: present
+
+  - name: start glusterd service
+    service:
+      name: glusterd
+      state: started
+      enabled: yes
+
+
+
+- hosts: storage-1
+  remote_user: vagrant
+  become: yes
+  gather_facts: false
+
+  tasks:
+
+  - name: probe peer server
+    command: gluster peer probe storage-2
+
+  # Gluster Options:
+  # Distributed Volume: gluster volume create gv0 storage-1:/data/brick1/gv0 storage-2:/data/brick1/gv0
+  # Replicated Volume: gluster volume create gv0 replica 2 storage-1:/data/brick1/gv0 storage-2:/data/brick1/gv0
+  # Striped Volume: gluster volume create gv0 stripe 2 storage-1:/data/brick1/gv0 storage-2:/data/brick1/gv0
+  - name: create gluster volume
+    command: gluster volume create gv0 storage-1:/data/brick1/gv0 storage-2:/data/brick1/gv0
+
+  - name: start gluster volume
+    command: gluster volume start gv0
+
+
+- hosts: client-1
+  remote_user: vagrant
+  become: yes
+  gather_facts: false
+
+  tasks:
+
+  - name: install required packages
+    package:
+      name: {{ item }}
+      state: present
+    with_items:
+      - fuse
+      - fuse-libs
+      - openib
+      - libibverbs
+      - centos-release-gluster312.noarch
+
+  - name: install gluster client software
+    package:
+      name: {{ item }}
+      state: present
+    with_items:
+      - glusterfs
+      - glusterfs-fuse
