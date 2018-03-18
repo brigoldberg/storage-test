@@ -1,0 +1,4 @@
+client-1
+[storage]
+storage-1
+storage-2

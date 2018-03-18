@@ -1,7 +1,7 @@
 ---
 # gluster-setup.yml
 
-- hosts: storage-[1:2]
+- hosts: storage
   remote_user: vagrant
   become: yes
   gather_facts: false
@@ -24,8 +24,8 @@
     file:
       path: /data/brick1
       state: directory
-      owner: root
-      group: root
+      owner: vagrant
+      group: vagrant
       mode: 0755
       recurse: yes
 
@@ -53,6 +53,10 @@
       enabled: yes
 
 
+# Gluster Options:
+# Distributed Volume: gluster volume create gv0 storage-1:/data/brick1/gv0 storage-2:/data/brick1/gv0
+# Replicated Volume: gluster volume create gv0 replica 2 storage-1:/data/brick1/gv0 storage-2:/data/brick1/gv0
+# Striped Volume: gluster volume create gv0 stripe 2 storage-1:/data/brick1/gv0 storage-2:/data/brick1/gv0
 
 - hosts: storage-1
   remote_user: vagrant
@@ -60,21 +64,22 @@
   gather_facts: false
 
   tasks:
-
-  - name: probe peer server
-    command: gluster peer probe storage-2
-
-  # Gluster Options:
-  # Distributed Volume: gluster volume create gv0 storage-1:/data/brick1/gv0 storage-2:/data/brick1/gv0
-  # Replicated Volume: gluster volume create gv0 replica 2 storage-1:/data/brick1/gv0 storage-2:/data/brick1/gv0
-  # Striped Volume: gluster volume create gv0 stripe 2 storage-1:/data/brick1/gv0 storage-2:/data/brick1/gv0
   - name: create gluster volume
-    command: gluster volume create gv0 storage-1:/data/brick1/gv0 storage-2:/data/brick1/gv0
+    #command: gluster volume create gv0 storage-1:/data/brick1/gv0 storage-2:/data/brick1/gv0
+    gluster_volume:
+      state: present
+      name: gv0
+      bricks: /data/brick1/gv0
+      rebalance: yes
+      cluster:
+        - storage-1
+        - storage-2
+    run_once: true
 
-  - name: start gluster volume
-    command: gluster volume start gv0
 
-
+#####################
+# Client setup
+#####################
 - hosts: client-1
   remote_user: vagrant
   become: yes
@@ -84,19 +89,25 @@
 
   - name: install required packages
     package:
-      name: {{ item }}
+      name: "{{ item }}"
       state: present
     with_items:
       - fuse
       - fuse-libs
-      - openib
       - libibverbs
       - centos-release-gluster312.noarch
 
   - name: install gluster client software
     package:
-      name: {{ item }}
+      name: "{{ item }}"
       state: present
     with_items:
       - glusterfs
       - glusterfs-fuse
+
+  - name: mount gluster volume
+    mount:
+      path: /mnt
+      src: storage-1:/gv0
+      fstype: glusterfs
+      state: mounted
