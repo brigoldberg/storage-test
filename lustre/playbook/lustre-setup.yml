@@ -1,0 +1,36 @@
+---
+# lustre-setup.yml
+
+############################
+#  Server Configuration
+############################
+- hosts: storage
+  remote_user: vagrant
+  become: yes
+  gather_facts: false
+
+  tasks:
+
+  - name: install lustre server repo
+    yum_repository:
+      name: lustre
+      description: Lustre Repo
+      baseurl: https://downloads.hpdd.intel.com/public/lustre/lustre-2.10.3/el7/server/
+      gpgcheck: no
+
+############################
+#  Client Configuration
+############################
+- hosts: client-1
+  remote_user: vagrant
+  become: yes
+  gather_facts: false
+
+  tasks:
+
+  - name: install lustre client repo
+    yum_repository:
+      name: lustre
+      description: Lustre Repo
+      baseurl: https://downloads.hpdd.intel.com/public/lustre/lustre-2.10.3/el7/client/
+      gpgcheck: no
