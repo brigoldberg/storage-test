@@ -1,0 +1,4 @@
+[storage]
+storage-1
+storage-2
+storage-3
