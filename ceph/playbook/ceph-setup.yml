@@ -1,0 +1,46 @@
+---
+# ceph-setup.yml
+
+###########################
+# Common Configuration
+###########################
+- hosts: all
+  remote_user: vagrant
+  become: yes
+  gather_facts: false
+
+  tasks:
+
+  - name: add ceph repository
+    yum_repository:
+      name: ceph-noarch
+      description: ceph-noarch
+      baseurl: https://download.ceph.com/rpm/el7/noarch
+      enabled: yes
+      gpgcheck: no
+    tags: repo
+
+
+###########################
+# Configure deplyment node
+###########################
+- hosts: storage-1
+  remote_user: vagrant
+  become: yes
+  gather_facts: false
+
+  tasks:
+
+  - name: install ceph-deply package
+    package:
+      name: ceph-deploy
+      state: present
+
+  - name: create installation directory
+    file:
+      path: /vagrant/my-cluster
+      state: directory
+      owner: vagrant
+      group: vagrant
+      mode: 0755
+

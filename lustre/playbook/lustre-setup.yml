@@ -1,6 +1,14 @@
 ---
+<<<<<<< HEAD
 # gluster-setup.yml
 
+=======
+# lustre-setup.yml
+
+############################
+#  Server Configuration
+############################
+>>>>>>> c86202fd9f07307b435358295ed5a916e2c5547f
 - hosts: storage
   remote_user: vagrant
   become: yes
@@ -8,6 +16,7 @@
 
   tasks:
 
+<<<<<<< HEAD
   - name: create storage disk partition 
     parted:
       device: /dev/sdb
@@ -42,4 +51,28 @@
       description: Lustre Repo
       file: lustre_repo
       baseurl: https://downloads.hpdd.intel.com/public/lustre/lustre-2.10.3/el7.4.1708/server/RPMS/x86_64/
+=======
+  - name: install lustre server repo
+    yum_repository:
+      name: lustre
+      description: Lustre Repo
+      baseurl: https://downloads.hpdd.intel.com/public/lustre/lustre-2.10.3/el7/server/
+      gpgcheck: no
+
+############################
+#  Client Configuration
+############################
+- hosts: client-1
+  remote_user: vagrant
+  become: yes
+  gather_facts: false
+
+  tasks:
+
+  - name: install lustre client repo
+    yum_repository:
+      name: lustre
+      description: Lustre Repo
+      baseurl: https://downloads.hpdd.intel.com/public/lustre/lustre-2.10.3/el7/client/
+>>>>>>> c86202fd9f07307b435358295ed5a916e2c5547f
       gpgcheck: no

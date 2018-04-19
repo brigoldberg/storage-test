@@ -24,7 +24,9 @@
       state: started
       enabled: yes
 
-
+########################
+# Build Gluster Cluster
+########################
 # Gluster Options:
 # Distributed Volume: gluster volume create gv0 storage-1:/data/brick1/gv0 storage-2:/data/brick1/gv0
 # Replicated Volume: gluster volume create gv0 replica 2 storage-1:/data/brick1/gv0 storage-2:/data/brick1/gv0
@@ -36,18 +38,19 @@
   gather_facts: false
 
   tasks:
+
   - name: create gluster volume
     #command: gluster volume create gv0 storage-1:/data/brick1/gv0 storage-2:/data/brick1/gv0
     gluster_volume:
       state: present
       name: gv0
       bricks: /data/brick1/gv0
-      rebalance: yes
+      transport: tcp
+      replicas: 2
       cluster:
         - storage-1
         - storage-2
     run_once: true
-
 
 #####################
 # Client setup
