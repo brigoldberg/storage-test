@@ -3,9 +3,18 @@
 
 Vagrant.configure("2") do |config|
 
-    config.vm.box = "centos/7"
+    config.vm.box = "centos-bg/7"
     storageDisk1 = './storageDisk1.vdi'
     storageDisk2 = './storageDisk2.vdi'
+    storageDisk3 = './storageDisk3.vdi'
+    storageDisk4 = './storageDisk4.vdi'
+    storageDisk5 = './storageDisk5.vdi'
+    storageDisk6 = './storageDisk6.vdi'
+    storageDisk7 = './storageDisk7.vdi'
+    storageDisk8 = './storageDisk8.vdi'
+
+    #CONTROLLER = ENV.fetch('CONTROLLER', 'SATA Controller')
+    CONTROLLER = 'SATA'
 
     config.vm.define "client-1" do |machine|
         machine.vm.hostname = "client-1"
@@ -21,10 +30,25 @@ Vagrant.configure("2") do |config|
         machine.vm.network "private_network", ip: "192.168.33.11"
         machine.vm.provision :shell, :path => "bootstrap.sh"
         machine.vm.provider "virtualbox" do |vb|
-            vb.customize ['createhd', '--filename', storageDisk1, '--size', 2 * 1024]
-            vb.customize ['storageattach', :id, '--storagectl', 'IDE', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', storageDisk1]
+            unless File.exists?(storageDisk1)
+                vb.customize ['createhd', '--filename', storageDisk1, '--size', 2 * 1024]
+            end
+            unless File.exists?(storageDisk2)
+                vb.customize ['createhd', '--filename', storageDisk2, '--size', 2 * 1024]
+            end
+            unless File.exists?(storageDisk3)
+                vb.customize ['createhd', '--filename', storageDisk3, '--size', 2 * 1024]
+            end
+            unless File.exists?(storageDisk4)
+                vb.customize ['createhd', '--filename', storageDisk4, '--size', 2 * 1024]
+            end
+            vb.customize ["storagectl", :id, "--name", "SATA", "--add", "sata" ]
+            vb.customize ['storageattach', :id, '--storagectl', CONTROLLER, '--port', 0, '--device', 0, '--type', 'hdd', '--medium', storageDisk1]
+            vb.customize ['storageattach', :id, '--storagectl', CONTROLLER, '--port', 1, '--device', 0, '--type', 'hdd', '--medium', storageDisk2]
+            vb.customize ['storageattach', :id, '--storagectl', CONTROLLER, '--port', 2, '--device', 0, '--type', 'hdd', '--medium', storageDisk3]
+            vb.customize ['storageattach', :id, '--storagectl', CONTROLLER, '--port', 3, '--device', 0, '--type', 'hdd', '--medium', storageDisk4]
             vb.memory = 1024
-            vb.cpus = 1
+            vb.cpus = 2
         end
     end
     config.vm.define "storage-2" do |machine|
@@ -32,10 +56,25 @@ Vagrant.configure("2") do |config|
         machine.vm.network "private_network", ip: "192.168.33.12"
         machine.vm.provision :shell, :path => "bootstrap.sh"
         machine.vm.provider "virtualbox" do |vb|
-            vb.customize ['createhd', '--filename', storageDisk2, '--size', 2 * 1024]
-            vb.customize ['storageattach', :id, '--storagectl', 'IDE', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', storageDisk2]
+            unless File.exists?(storageDisk5)
+                vb.customize ['createhd', '--filename', storageDisk5, '--size', 2 * 1024]
+            end
+            unless File.exists?(storageDisk6)
+                vb.customize ['createhd', '--filename', storageDisk6, '--size', 2 * 1024]
+            end
+            unless File.exists?(storageDisk7)
+                vb.customize ['createhd', '--filename', storageDisk7, '--size', 2 * 1024]
+            end
+            unless File.exists?(storageDisk8)
+                vb.customize ['createhd', '--filename', storageDisk8, '--size', 2 * 1024]
+            end
+            vb.customize ["storagectl", :id, "--name", "SATA", "--add", "sata" ]
+            vb.customize ['storageattach', :id, '--storagectl', CONTROLLER, '--port', 0, '--device', 0, '--type', 'hdd', '--medium', storageDisk5]
+            vb.customize ['storageattach', :id, '--storagectl', CONTROLLER, '--port', 1, '--device', 0, '--type', 'hdd', '--medium', storageDisk6]
+            vb.customize ['storageattach', :id, '--storagectl', CONTROLLER, '--port', 2, '--device', 0, '--type', 'hdd', '--medium', storageDisk7]
+            vb.customize ['storageattach', :id, '--storagectl', CONTROLLER, '--port', 3, '--device', 0, '--type', 'hdd', '--medium', storageDisk8]
             vb.memory = 1024
-            vb.cpus = 1
+            vb.cpus = 2
         end
     end
 end

@@ -8,34 +8,6 @@
 
   tasks:
 
-  - name: create storage disk partition 
-    parted:
-      device: /dev/sdb
-      number: 1
-      state: present
-      align: cylinder
-
-  - name: create XFS filesystem
-    filesystem:
-      fstype: xfs
-      dev: /dev/sdb1
-
-  - name: create mountpoint
-    file:
-      path: /data/brick1
-      state: directory
-      owner: vagrant
-      group: vagrant
-      mode: 0755
-      recurse: yes
-
-  - name: mount disk
-    mount:
-      path: /data/brick1
-      src: /dev/sdb1
-      fstype: xfs
-      state: mounted
-
   - name: install gluster repo
     package:
       name: centos-release-gluster312.noarch

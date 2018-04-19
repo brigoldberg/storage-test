@@ -1,0 +1,57 @@
+---
+# xfs-setup.yml
+
+- hosts: storage
+  remote_user: vagrant
+  become: yes
+  gather_facts: false
+
+  tasks:
+
+  - name: create storage disk partition
+    parted:
+      device: "{{ item }}"
+      number: 1
+      state: present
+      align: cylinder
+    with_items:
+      - /dev/sdb
+      - /dev/sdc
+      - /dev/sdd
+      - /dev/sde
+
+  - name: create XFS filesystem
+    filesystem:
+      fstype: xfs
+      dev: "{{ items }}"
+    with_items:
+      - /dev/sdb1
+      - /dev/sdc1
+      - /dev/sdd1
+      - /dev/sde1
+
+  - name: create mount point
+    file:
+      path: "{{ item }}"
+      state: directory
+      owner: vagrant
+      group: vagrant
+      mode: 0755
+      recurse: yes
+    with_items:
+      - /data/brick1
+      - /data/brick2
+      - /data/brick3
+      - /data/brick4
+
+  - name: mount disk
+    mount:
+      path: "{{ item.brick }}"
+      src: "{{ item.src }}"
+      fstype: xfs
+      state: mounted
+    with_items:
+      - { brick: '/data/brick1', src: '/dev/sdb1' }
+      - { brick: '/data/brick2', src: '/dev/sdc1' }
+      - { brick: '/data/brick3', src: '/dev/sdd1' }
+      - { brick: '/data/brick4', src: '/dev/sde1' }

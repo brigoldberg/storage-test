@@ -1,0 +1,46 @@
+---
+# gluster ZFS setup
+
+- hosts: storage
+  remote_user: vagrant
+  become: yes
+  gather_facts: false
+
+  tasks:
+
+  - name: install ZFS repo
+    package:
+      name: http://download.zfsonlinux.org/epel/zfs-release.el7_4.noarch.rpm
+      state: present
+
+  - name: install ZFS package
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - zfs
+      - zfs-dkms
+
+  - name: install ZFS module
+    modprobe:
+      name: zfs
+      state: present
+
+  - name: create mount point
+    file:
+      path: "{{ item }}"
+      state: directory
+      owner: vagrant
+      group: vagrant
+      mode: 0755
+      recurse: yes
+    with_items:
+      - /data/brick1
+
+  - name: create zfs pool
+    command: zpool create tank raidz /dev/sdb /dev/sdc /dev/sdd /dev/sde
+      
+    # at this point, you need to run:
+    #     zfs unmount tank
+    #     zfs set mountpoint=/data/brick1 tank
+    #     zfs mount -a

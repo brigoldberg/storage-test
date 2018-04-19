@@ -1,0 +1,45 @@
+---
+# gluster-setup.yml
+
+- hosts: storage
+  remote_user: vagrant
+  become: yes
+  gather_facts: false
+
+  tasks:
+
+  - name: create storage disk partition 
+    parted:
+      device: /dev/sdb
+      number: 1
+      state: present
+      align: cylinder
+
+  - name: create XFS filesystem
+    filesystem:
+      fstype: xfs
+      dev: /dev/sdb1
+
+  - name: create mountpoint
+    file:
+      path: /data/brick1
+      state: directory
+      owner: vagrant
+      group: vagrant
+      mode: 0755
+      recurse: yes
+
+  - name: mount disk
+    mount:
+      path: /data/brick1
+      src: /dev/sdb1
+      fstype: xfs
+      state: mounted
+
+  - name: install YUM Lustre repo
+    yum_repository:
+      name: lustre
+      description: Lustre Repo
+      file: lustre_repo
+      baseurl: https://downloads.hpdd.intel.com/public/lustre/lustre-2.10.3/el7.4.1708/server/RPMS/x86_64/
+      gpgcheck: no
