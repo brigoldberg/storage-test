@@ -14,7 +14,7 @@ Vagrant.configure("2") do |config|
     storageDisk8 = './storageDisk8.vdi'
 
     #CONTROLLER = ENV.fetch('CONTROLLER', 'SATA Controller')
-    CONTROLLER = 'SATA'
+    CONTROLLER = 'SCSI'
 
     config.vm.define "client-1" do |machine|
         machine.vm.hostname = "client-1"
@@ -42,7 +42,7 @@ Vagrant.configure("2") do |config|
             unless File.exists?(storageDisk4)
                 vb.customize ['createhd', '--filename', storageDisk4, '--size', 2 * 1024]
             end
-            vb.customize ["storagectl", :id, "--name", "SATA", "--add", "sata" ]
+            vb.customize ["storagectl", :id, "--name", "SCSI", "--add", "scsi", "--bootable", "off" ]
             vb.customize ['storageattach', :id, '--storagectl', CONTROLLER, '--port', 0, '--device', 0, '--type', 'hdd', '--medium', storageDisk1]
             vb.customize ['storageattach', :id, '--storagectl', CONTROLLER, '--port', 1, '--device', 0, '--type', 'hdd', '--medium', storageDisk2]
             vb.customize ['storageattach', :id, '--storagectl', CONTROLLER, '--port', 2, '--device', 0, '--type', 'hdd', '--medium', storageDisk3]
@@ -68,7 +68,7 @@ Vagrant.configure("2") do |config|
             unless File.exists?(storageDisk8)
                 vb.customize ['createhd', '--filename', storageDisk8, '--size', 2 * 1024]
             end
-            vb.customize ["storagectl", :id, "--name", "SATA", "--add", "sata" ]
+            vb.customize ["storagectl", :id, "--name", "SCSI", "--add", "scsi", "--bootable", "off" ]
             vb.customize ['storageattach', :id, '--storagectl', CONTROLLER, '--port', 0, '--device', 0, '--type', 'hdd', '--medium', storageDisk5]
             vb.customize ['storageattach', :id, '--storagectl', CONTROLLER, '--port', 1, '--device', 0, '--type', 'hdd', '--medium', storageDisk6]
             vb.customize ['storageattach', :id, '--storagectl', CONTROLLER, '--port', 2, '--device', 0, '--type', 'hdd', '--medium', storageDisk7]
