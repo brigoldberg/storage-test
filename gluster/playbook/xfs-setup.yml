@@ -23,7 +23,7 @@
   - name: create XFS filesystem
     filesystem:
       fstype: xfs
-      dev: "{{ items }}"
+      dev: "{{ item }}"
     with_items:
       - /dev/sdb1
       - /dev/sdc1
