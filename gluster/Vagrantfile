@@ -4,14 +4,18 @@
 Vagrant.configure("2") do |config|
 
     config.vm.box = "centos-bg/7"
-    storageDisk1 = './storageDisk1.vdi'
-    storageDisk2 = './storageDisk2.vdi'
-    storageDisk3 = './storageDisk3.vdi'
-    storageDisk4 = './storageDisk4.vdi'
-    storageDisk5 = './storageDisk5.vdi'
-    storageDisk6 = './storageDisk6.vdi'
-    storageDisk7 = './storageDisk7.vdi'
-    storageDisk8 = './storageDisk8.vdi'
+    storageDisk01 = './storageDisk01.vdi'
+    storageDisk02 = './storageDisk02.vdi'
+    storageDisk03 = './storageDisk03.vdi'
+    storageDisk04 = './storageDisk04.vdi'
+    storageDisk05 = './storageDisk05.vdi'
+    storageDisk06 = './storageDisk06.vdi'
+    storageDisk07 = './storageDisk07.vdi'
+    storageDisk08 = './storageDisk08.vdi'
+    storageDisk09 = './storageDisk09.vdi'
+    storageDisk10 = './storageDisk10.vdi'
+    storageDisk11 = './storageDisk11.vdi'
+    storageDisk12 = './storageDisk12.vdi'
 
     #CONTROLLER = ENV.fetch('CONTROLLER', 'SATA Controller')
     CONTROLLER = 'SCSI'
@@ -30,51 +34,80 @@ Vagrant.configure("2") do |config|
         machine.vm.network "private_network", ip: "192.168.33.11"
         machine.vm.provision :shell, :path => "bootstrap.sh"
         machine.vm.provider "virtualbox" do |vb|
-            unless File.exists?(storageDisk1)
-                vb.customize ['createhd', '--filename', storageDisk1, '--size', 2 * 1024]
+            unless File.exists?(storageDisk01)
+                vb.customize ['createhd', '--filename', storageDisk01, '--size', 2 * 1024]
             end
-            unless File.exists?(storageDisk2)
-                vb.customize ['createhd', '--filename', storageDisk2, '--size', 2 * 1024]
+            unless File.exists?(storageDisk02)
+                vb.customize ['createhd', '--filename', storageDisk02, '--size', 2 * 1024]
             end
-            unless File.exists?(storageDisk3)
-                vb.customize ['createhd', '--filename', storageDisk3, '--size', 2 * 1024]
+            unless File.exists?(storageDisk03)
+                vb.customize ['createhd', '--filename', storageDisk03, '--size', 2 * 1024]
             end
-            unless File.exists?(storageDisk4)
-                vb.customize ['createhd', '--filename', storageDisk4, '--size', 2 * 1024]
+            unless File.exists?(storageDisk04)
+                vb.customize ['createhd', '--filename', storageDisk04, '--size', 2 * 1024]
             end
             vb.customize ["storagectl", :id, "--name", "SCSI", "--add", "scsi", "--bootable", "off" ]
-            vb.customize ['storageattach', :id, '--storagectl', CONTROLLER, '--port', 0, '--device', 0, '--type', 'hdd', '--medium', storageDisk1]
-            vb.customize ['storageattach', :id, '--storagectl', CONTROLLER, '--port', 1, '--device', 0, '--type', 'hdd', '--medium', storageDisk2]
-            vb.customize ['storageattach', :id, '--storagectl', CONTROLLER, '--port', 2, '--device', 0, '--type', 'hdd', '--medium', storageDisk3]
-            vb.customize ['storageattach', :id, '--storagectl', CONTROLLER, '--port', 3, '--device', 0, '--type', 'hdd', '--medium', storageDisk4]
+            vb.customize ['storageattach', :id, '--storagectl', CONTROLLER, '--port', 0, '--device', 0, '--type', 'hdd', '--medium', storageDisk01]
+            vb.customize ['storageattach', :id, '--storagectl', CONTROLLER, '--port', 1, '--device', 0, '--type', 'hdd', '--medium', storageDisk02]
+            vb.customize ['storageattach', :id, '--storagectl', CONTROLLER, '--port', 2, '--device', 0, '--type', 'hdd', '--medium', storageDisk03]
+            vb.customize ['storageattach', :id, '--storagectl', CONTROLLER, '--port', 3, '--device', 0, '--type', 'hdd', '--medium', storageDisk04]
             vb.memory = 1024
             vb.cpus = 2
         end
     end
+
     config.vm.define "storage-2" do |machine|
         machine.vm.hostname = "storage-2"
         machine.vm.network "private_network", ip: "192.168.33.12"
         machine.vm.provision :shell, :path => "bootstrap.sh"
         machine.vm.provider "virtualbox" do |vb|
-            unless File.exists?(storageDisk5)
-                vb.customize ['createhd', '--filename', storageDisk5, '--size', 2 * 1024]
+            unless File.exists?(storageDisk05)
+                vb.customize ['createhd', '--filename', storageDisk05, '--size', 2 * 1024]
             end
-            unless File.exists?(storageDisk6)
-                vb.customize ['createhd', '--filename', storageDisk6, '--size', 2 * 1024]
+            unless File.exists?(storageDisk06)
+                vb.customize ['createhd', '--filename', storageDisk06, '--size', 2 * 1024]
             end
-            unless File.exists?(storageDisk7)
-                vb.customize ['createhd', '--filename', storageDisk7, '--size', 2 * 1024]
+            unless File.exists?(storageDisk07)
+                vb.customize ['createhd', '--filename', storageDisk07, '--size', 2 * 1024]
             end
-            unless File.exists?(storageDisk8)
-                vb.customize ['createhd', '--filename', storageDisk8, '--size', 2 * 1024]
+            unless File.exists?(storageDisk08)
+                vb.customize ['createhd', '--filename', storageDisk08, '--size', 2 * 1024]
             end
             vb.customize ["storagectl", :id, "--name", "SCSI", "--add", "scsi", "--bootable", "off" ]
-            vb.customize ['storageattach', :id, '--storagectl', CONTROLLER, '--port', 0, '--device', 0, '--type', 'hdd', '--medium', storageDisk5]
-            vb.customize ['storageattach', :id, '--storagectl', CONTROLLER, '--port', 1, '--device', 0, '--type', 'hdd', '--medium', storageDisk6]
-            vb.customize ['storageattach', :id, '--storagectl', CONTROLLER, '--port', 2, '--device', 0, '--type', 'hdd', '--medium', storageDisk7]
-            vb.customize ['storageattach', :id, '--storagectl', CONTROLLER, '--port', 3, '--device', 0, '--type', 'hdd', '--medium', storageDisk8]
+            vb.customize ['storageattach', :id, '--storagectl', CONTROLLER, '--port', 0, '--device', 0, '--type', 'hdd', '--medium', storageDisk05]
+            vb.customize ['storageattach', :id, '--storagectl', CONTROLLER, '--port', 1, '--device', 0, '--type', 'hdd', '--medium', storageDisk06]
+            vb.customize ['storageattach', :id, '--storagectl', CONTROLLER, '--port', 2, '--device', 0, '--type', 'hdd', '--medium', storageDisk07]
+            vb.customize ['storageattach', :id, '--storagectl', CONTROLLER, '--port', 3, '--device', 0, '--type', 'hdd', '--medium', storageDisk08]
             vb.memory = 1024
             vb.cpus = 2
         end
     end
+
+    config.vm.define "storage-3" do |machine|
+        machine.vm.hostname = "storage-3"
+        machine.vm.network "private_network", ip: "192.168.33.13"
+        machine.vm.provision :shell, :path => "bootstrap.sh"
+        machine.vm.provider "virtualbox" do |vb|
+            unless File.exists?(storageDisk09)
+                vb.customize ['createhd', '--filename', storageDisk09, '--size', 2 * 1024]
+            end
+            unless File.exists?(storageDisk10)
+                vb.customize ['createhd', '--filename', storageDisk10, '--size', 2 * 1024]
+            end
+            unless File.exists?(storageDisk11)
+                vb.customize ['createhd', '--filename', storageDisk11, '--size', 2 * 1024]
+            end
+            unless File.exists?(storageDisk12)
+                vb.customize ['createhd', '--filename', storageDisk12, '--size', 2 * 1024]
+            end
+            vb.customize ["storagectl", :id, "--name", "SCSI", "--add", "scsi", "--bootable", "off" ]
+            vb.customize ['storageattach', :id, '--storagectl', CONTROLLER, '--port', 0, '--device', 0, '--type', 'hdd', '--medium', storageDisk09]
+            vb.customize ['storageattach', :id, '--storagectl', CONTROLLER, '--port', 1, '--device', 0, '--type', 'hdd', '--medium', storageDisk10]
+            vb.customize ['storageattach', :id, '--storagectl', CONTROLLER, '--port', 2, '--device', 0, '--type', 'hdd', '--medium', storageDisk11]
+            vb.customize ['storageattach', :id, '--storagectl', CONTROLLER, '--port', 3, '--device', 0, '--type', 'hdd', '--medium', storageDisk12]
+            vb.memory = 1024
+            vb.cpus = 2
+        end
+    end
+
 end

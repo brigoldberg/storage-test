@@ -10,6 +10,7 @@ ln -sf /usr/share/zoneinfo/America/New_York /etc/localtime
 
 echo "192.168.33.11      storage-1" >> /etc/hosts
 echo "192.168.33.12      storage-2" >> /etc/hosts
+echo "192.168.33.13      storage-3" >> /etc/hosts
 
 cat << EOF > /home/vagrant/.ssh/id_rsa
 -----BEGIN RSA PRIVATE KEY-----

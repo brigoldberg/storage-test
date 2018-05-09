@@ -44,12 +44,14 @@
     gluster_volume:
       state: present
       name: gv0
-      bricks: /data/brick1/gv0
+      bricks: /data/brick1/gv0,/data/brick2/gv0,/data/brick3/gv0,/data/brick4/gv0
       transport: tcp
-      replicas: 2
+      disperses: 3
+      redundancies: 1
       cluster:
         - storage-1
         - storage-2
+        - storage-3
     run_once: true
 
 #####################
